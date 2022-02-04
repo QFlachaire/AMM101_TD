@@ -8,10 +8,12 @@ var evaluator = artifacts.require("Evaluator.sol");
 
 module.exports = (deployer, network, accounts) => {
     deployer.then(async () => {
-        await deployTDToken(deployer, network, accounts); 
-        await deployEvaluator(deployer, network, accounts); 
-        await setPermissionsAndRandomValues(deployer, network, accounts); 
-        await deployRecap(deployer, network, accounts); 
+        //await deployTDToken(deployer, network, accounts); 
+        //await deployEvaluator(deployer, network, accounts); 
+        //await setPermissionsAndRandomValues(deployer, network, accounts); 
+        //await deployRecap(deployer, network, accounts); 
+		await hardcodeContractAddress(deployer, network, accounts)
+		await deployment(deployer, network, accounts); 
     });
 };
 
@@ -45,10 +47,32 @@ async function setPermissionsAndRandomValues(deployer, network, accounts) {
 	await Evaluator.setRandomTickersAndSupply(randomSupplies, randomTickers);
 }
 
+async function hardcodeContractAddress(deployer, network, accounts) {
+	TDToken = await TDErc20.at("0xc2269af51350796aF4F6D52e4736Db3A885F28D6")
+	DummyToken = await dummyToken.at("0xbc3b69d1abD5A39f55a9Ba50C7a2aDd933952123")
+	Evaluator = await evaluator.at("0x89a2Faa44066e94CE6B6D82927b0bbbb8709eEd7")
+}
+
 async function deployRecap(deployer, network, accounts) {
 	console.log("TDToken " + TDToken.address)
 	console.log("dummyToken " + dummyToken.address)
 	console.log("Evaluator " + Evaluator.address)
 }
 
+async function deployment(deployer, network, accounts) {
 
+	i=0;
+	getBalance = await TDToken.balanceOf(accounts[i]);
+	console.log("Init Balance " + getBalance.toString());
+		
+	// ExInit
+	a = await Evaluator.dummyToken({from: accounts[i]});
+	console.log(a);
+	getBalance = await TDToken.balanceOf(accounts[i]);
+	console.log("ExInit Balance " + getBalance.toString());
+
+	// Ex1
+	await Evaluator.ex1_showIHaveTokens({from: accounts[i]});
+	getBalance = await TDToken.balanceOf(accounts[i]);
+	console.log("Ex1 Balance " + getBalance.toString());
+}
