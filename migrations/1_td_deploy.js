@@ -49,7 +49,7 @@ async function setPermissionsAndRandomValues(deployer, network, accounts) {
 
 async function hardcodeContractAddress(deployer, network, accounts) {
 	TDToken = await TDErc20.at("0xc2269af51350796aF4F6D52e4736Db3A885F28D6")
-	DummyToken = await dummyToken.at("0xbc3b69d1abD5A39f55a9Ba50C7a2aDd933952123")
+	DummyToken = await ERC20.at("0xbc3b69d1abD5A39f55a9Ba50C7a2aDd933952123")
 	Evaluator = await evaluator.at("0x89a2Faa44066e94CE6B6D82927b0bbbb8709eEd7")
 }
 
