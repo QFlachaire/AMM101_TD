@@ -4,7 +4,7 @@ const Str = require('@supercharge/strings')
 var TDErc20 = artifacts.require("ERC20TD.sol");
 var ERC20 = artifacts.require("DummyToken.sol"); 
 var evaluator = artifacts.require("Evaluator.sol");
-
+var ERC20solution = artifacts.require("ERC20Solution.sol");
 
 module.exports = (deployer, network, accounts) => {
     deployer.then(async () => {
@@ -72,7 +72,44 @@ async function deployment(deployer, network, accounts) {
 	console.log("ExInit Balance " + getBalance.toString());
 
 	// Ex1
-	await Evaluator.ex1_showIHaveTokens({from: accounts[i]});
+	// await Evaluator.ex1_showIHaveTokens({from: accounts[i]});
+	// getBalance = await TDToken.balanceOf(accounts[i]);
+	// console.log("Ex1 Balance " + getBalance.toString());
+	
+	// await Evaluator.submitExercice(Solution.address)
+	
+	// Ex2
+	// await Evaluator.ex2_showIProvidedLiquidity({from: accounts[i]});
+	// getBalance = await TDToken.balanceOf(accounts[i]);
+	// console.log("Ex2 Balance " + getBalance.toString());
+
+	// Ex6a
+	await Evaluator.ex6a_getTickerAndSupply({from: accounts[i]});
 	getBalance = await TDToken.balanceOf(accounts[i]);
-	console.log("Ex1 Balance " + getBalance.toString());
+	console.log("Ex6a Balance " + getBalance.toString());
+	
+	ticker = await Evaluator.readTicker(accounts[i]);
+	console.log(ticker);
+	supply = await Evaluator.readSupply(accounts[i]);
+	console.log(supply.toString());
+
+	// Ex6b
+	ERC20Solution = await ERC20solution.new(ticker, ticker, supply.toString());
+	await Evaluator.submitErc20(ERC20Solution.address, {from: accounts[i]});
+
+	console.log(ERC20Solution.address);
+
+	await Evaluator.ex6b_testErc20TickerAndSupply({from: accounts[i]});
+	getBalance = await TDToken.balanceOf(accounts[i]);
+	console.log("Ex6b Balance " + getBalance.toString());
+	
+	wethAddress = "0xc778417e063141139fce010982780140aa0cd5ab"
+	uniswapV2FactoryAddress = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f"
+	ExerciceSolution = await exerciceSolution.new(ERC20Solution.address, weth, uniswapV2FactoryAddress)
+	// Ex7
+	await Evaluator.ex7_tokenIsTradableOnUniswap({from: accounts[i]});
+	getBalance = await TDToken.balanceOf(accounts[i]);
+	console.log("Ex7 Balance " + getBalance.toString());
+
+	
 }
